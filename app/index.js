@@ -92,10 +92,10 @@ var saveSettings = function() {
 
     cookies.write("card_printer_single_card_page", settings.singleCardPage);
     cookies.write("card_printer_hide_description", settings.hideDescription);
-    cookies.write("card_printer_hide_assignee", settings.hideAssignee);
+    // cookies.write("card_printer_hide_assignee", settings.hideAssignee);
     cookies.write("card_printer_hide_due_date", settings.hideDueDate);
     cookies.write("card_printer_hide_estimate", settings.hideEstimate);
-    cookies.write("card_printer_hide_qr_code", settings.hideQrCode);
+    // cookies.write("card_printer_hide_qr_code", settings.hideQrCode);
     cookies.write("card_printer_hide_tags", settings.hideTags);
     cookies.write("card_printer_hide_epic", settings.hideEpic);
 }
@@ -108,10 +108,10 @@ var loadSettings = function() {
 
     settings.singleCardPage = parseBool(cookies.read("card_printer_single_card_page"), true);
     settings.hideDescription = parseBool(cookies.read("card_printer_hide_description"), false);
-    settings.hideAssignee = parseBool(cookies.read("card_printer_hide_assignee"), false);
+    // settings.hideAssignee = parseBool(cookies.read("card_printer_hide_assignee"), false);
     settings.hideDueDate = parseBool(cookies.read("card_printer_hide_due_date"), false);
     settings.hideEstimate = parseBool(cookies.read("card_printer_hide_estimate"), false);
-    settings.hideQrCode = parseBool(cookies.read("card_printer_hide_qr_code"), false);
+    // settings.hideQrCode = parseBool(cookies.read("card_printer_hide_qr_code"), false);
     settings.hideTags = parseBool(cookies.read("card_printer_hide_tags"), true);
     settings.hideEpic = parseBool(cookies.read("card_printer_hide_epic"), false);
 }
@@ -149,10 +149,10 @@ var updatePrintDialogue = function() {
 
     $("#single-card-page-checkbox", appFrameDocument).attr('checked', settings.singleCardPage);
     $("#description-checkbox", appFrameDocument).attr('checked', !settings.hideDescription);
-    $("#assignee-checkbox", appFrameDocument).attr('checked', !settings.hideAssignee);
+    // $("#assignee-checkbox", appFrameDocument).attr('checked', !settings.hideAssignee);
     $("#due-date-checkbox", appFrameDocument).attr('checked', !settings.hideDueDate);
     $("#estimate-checkbox", appFrameDocument).attr('checked', !settings.hideEstimate);
-    $("#qr-code-checkbox", appFrameDocument).attr('checked', !settings.hideQrCode);
+    // $("#qr-code-checkbox", appFrameDocument).attr('checked', !settings.hideQrCode);
     $("#tags-checkbox", appFrameDocument).attr('checked', !settings.hideTags);
     $("#epic-checkbox", appFrameDocument).attr('checked', !settings.hideEpic);
 }
@@ -206,17 +206,17 @@ var scaleCards = function() {
     $("head", printFrame.document).append(style);
 }
 
-var cropCards = function() {
-    var cardElements = Array.from(global.printFrame.document.querySelectorAll(".card"));
-    cardElements.forEach(function (cardElement) {
-        var cardContent = cardElement.querySelectorAll(".card-body")[0];
-        if (cardContent.scrollHeight > cardContent.offsetHeight) {
-            cardContent.classList.add("zigzag");
-        } else {
-            cardContent.classList.remove("zigzag");
-        }
-    });
-}
+// var cropCards = function() {
+//     var cardElements = Array.from(global.printFrame.document.querySelectorAll(".card"));
+//     cardElements.forEach(function (cardElement) {
+//         var cardContent = cardElement.querySelectorAll(".card-body")[0];
+//         if (cardContent.scrollHeight > cardContent.offsetHeight) {
+//             cardContent.classList.add("zigzag");
+//         } else {
+//             cardContent.classList.remove("zigzag");
+//         }
+//     });
+// }
 
 var getIconStyle = function(type) {
     var style = {};
@@ -232,14 +232,16 @@ var getIconStyle = function(type) {
             break;
         case 'story':
         case 'user story':
-            style.color = 'GOLD';
+            style.color = 'rgb(54,179,126)';
             style.image = 'https://qoomon.github.io/Jira-Issue-Card-Printer/resources/icons/Bulb.png';
             style.size = '63%';
             break;
         case 'bug':
         case 'problem':
         case 'correction':
-            style.color = 'CRIMSON';
+        case 'fehler':
+        case 'fehler_intern':
+            style.color = 'rgb(255,86,48)';
             style.image = 'https://qoomon.github.io/Jira-Issue-Card-Printer/resources/icons/Bug.png';
             style.size = '63%';
             break;
@@ -252,9 +254,14 @@ var getIconStyle = function(type) {
         case 'sub-task':
         case 'technical task':
         case 'aufgabe':
-        case 'unteraufgabe':
+        case 'aufgabe_neu':
         case 'technische aufgabe':
-            style.color = 'WHEAT';
+            style.color = 'rgb(137,147,164)';
+            style.image = 'https://qoomon.github.io/Jira-Issue-Card-Printer/resources/icons/Task.png';
+            style.size = '63%';
+            break;
+        case 'unteraufgabe':
+            style.color = 'rgb(38,132,255)';
             style.image = 'https://qoomon.github.io/Jira-Issue-Card-Printer/resources/icons/Task.png';
             style.size = '63%';
             break;
@@ -283,14 +290,14 @@ var getIconStyle = function(type) {
     return style;
 }
 
-var fillCard = function(card, data) {
+var fillCard = function (card, data, index, issueDictionary) {
     //Key
     card.find('.issue-id').text(data.key);
 
     //Type
     var iconBackground = getIconStyle(data.type);
     card.find('.issue-icon').css('background-color', iconBackground.color);
-    card.find('.issue-icon').css('background-image', 'url(' + iconBackground.image + ')');
+    card.find('.issue-icon').css('background-image', 'url(' + data.issuetypeIconUrl + ')');
     card.find('.issue-icon').css('background-size', iconBackground.size);
 
     //Summary
@@ -303,20 +310,20 @@ var fillCard = function(card, data) {
         card.find(".issue-description").addClass("hidden");
     }
 
-    //Assignee
-    if (data.assignee) {
-        if (data.avatarUrl) {
-            card.find(".issue-assignee").css("background-image", "url('" + data.avatarUrl + "')");
-        } else {
-            var initials = data.assignee.trim().replace(/\s{2,}/g," ").split(/\s/).map(function (namePart) {
-                return namePart[0].toUpperCase();
-            }).join('');
-            card.find(".issue-assignee").text(initials);
-            card.find(".issue-assignee").css("background-color", textColor(initials));
-        }
-    } else {
-        card.find(".issue-assignee").remove();
-    }
+    // //Assignee
+    // if (data.assignee) {
+    //     if (data.avatarUrl) {
+    //         card.find(".issue-assignee").css("background-image", "url('" + data.avatarUrl + "')");
+    //     } else {
+    //         var initials = data.assignee.trim().replace(/\s{2,}/g," ").split(/\s/).map(function (namePart) {
+    //             return namePart[0].toUpperCase();
+    //         }).join('');
+    //         card.find(".issue-assignee").text(initials);
+    //         card.find(".issue-assignee").css("background-color", textColor(initials));
+    //     }
+    // } else {
+    //     card.find(".issue-assignee").remove();
+    // }
 
     //Due-Date
     if (data.dueDate) {
@@ -325,14 +332,22 @@ var fillCard = function(card, data) {
         card.find(".issue-due-box").remove();
     }
 
-    //Attachment
-    if (!data.hasAttachment) {
-        card.find('.issue-attachment').remove();
+    // //Attachment
+    // if (!data.hasAttachment) {
+    //     card.find('.issue-attachment').remove();
+    // }
+
+    //Position
+    var position = index + 1;
+    if (position) {
+        card.find(".issue-index").text(position);
+    } else {
+        card.find(".issue-index").remove();
     }
 
     //Estimate
     if (data.estimate) {
-        card.find(".issue-estimate").text(data.estimate);
+        card.find(".issue-estimate").text("SPs: " + data.estimate);
     } else {
         card.find(".issue-estimate").remove();
     }
@@ -340,12 +355,62 @@ var fillCard = function(card, data) {
     //Supper Issue
     if (data.superIssue) {
         var superIssueTagElement = $('<div />');
-        superIssueTagElement.text(data.superIssue);
+
+        var superIssueWithoutDescription = data.superIssue.substring(0, data.superIssue.indexOf(" "));
+
+        superIssueTagElement.text(superIssueWithoutDescription);
         superIssueTagElement.addClass('badge');
         superIssueTagElement.addClass('issue-tag');
         superIssueTagElement.addClass('issue-tag-super-issue');
         superIssueTagElement.css('background-color', textColor(data.superIssue));
-        card.find(".issue-tags-box").append(superIssueTagElement);
+        card.find(".issue-upperTicket-box").append(superIssueTagElement);
+
+        // see if sub-tasks exist
+        var superIssueSubtasks = issueDictionary.find(function (issue) {
+            return issue.key == superIssueWithoutDescription;
+        });
+        
+        //console.log("Super Ticket has subtasks? " + JSON.stringify(superIssueSubtasks, 2, 2));
+        
+        if (superIssueSubtasks && superIssueSubtasks.subtasks.length > 0) {
+            var subTaskIndex = superIssueSubtasks.subtasks.indexOf(data.key) + 1;
+            var subTaskIndexText = subTaskIndex + "/" + superIssueSubtasks.subtasks.length;
+
+            var subTaskIndexTagElement = $('<div />');
+            subTaskIndexTagElement.text(subTaskIndexText);
+            subTaskIndexTagElement.addClass('badge');
+            subTaskIndexTagElement.addClass('issue-tag');
+            subTaskIndexTagElement.addClass('issue-tag-subTaskIndex-issue');
+            subTaskIndexTagElement.css('background-color', 'rgb(38,132,255)');
+            card.find(".issue-subTaskIndex-box").append(subTaskIndexTagElement);
+        }
+    }
+    else {
+        card.find(".issue-subTaskIndex-box").remove();
+    }
+
+    //priority
+    if (data.priority) {
+        card.find('.issue-priority-icon').css('background-image', 'url(' + data.priorityIconUrl + ')');
+    }
+
+    // Status
+    if (data.statusText) {
+        card.find(".issue-status").text(data.statusText);
+        card.find(".issue-status").addClass('issue-tag');
+        
+        if (data.statusColor) {
+            card.find('.issue-status').css('background-color', data.statusColor);
+            
+            // override invalid color
+            if (data.statusColor == 'blue-gray') {
+                card.find('.issue-status').css('background-color', '#4a6785');
+            }
+
+            if (data.statusColor == 'green' || data.statusColor == 'blue-gray') {
+                card.find('.issue-status').css('color', 'white');
+            }
+        }
     }
 
     //Labels
@@ -361,9 +426,9 @@ var fillCard = function(card, data) {
         });
     }
 
-    //QR-Code
-    var qrCodeUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=256x256&chld=L|1&chl=' + encodeURIComponent(data.url);
-    card.find(".issue-qr-code").css("background-image", "url('" + qrCodeUrl + "')");
+    // //QR-Code
+    // var qrCodeUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=256x256&chld=L|1&chl=' + encodeURIComponent(data.url);
+    // card.find(".issue-qr-code").css("background-image", "url('" + qrCodeUrl + "')");
 }
 
 var applyCardOptions = function() {
@@ -372,14 +437,14 @@ var applyCardOptions = function() {
 
     // hide/show description
     $(".issue-description", printFrame.document).toggle(!settings.hideDescription);
-    // hide/show assignee
-    $(".issue-assignee", printFrame.document).toggle(!settings.hideAssignee);
+    // // hide/show assignee
+    // $(".issue-assignee", printFrame.document).toggle(!settings.hideAssignee);
     // hide/show due date
     $(".issue-due-box", printFrame.document).toggle(!settings.hideDueDate);
     // hide/show estimate
     $(".issue-estimate", printFrame.document).toggle(!settings.hideEstimate);
-    // hide/show cr code
-    $(".issue-qr-code", printFrame.document).toggle(!settings.hideQrCode);
+    // // hide/show cr code
+    // $(".issue-qr-code", printFrame.document).toggle(!settings.hideQrCode);
     // hide/show super issue tag
     $(".issue-tag-super-issue", printFrame.document).toggle(!settings.hideEpic);
     // hide/show label tags
@@ -405,7 +470,7 @@ var applyCardOptions = function() {
 var redrawCards = function() {
     applyCardOptions();
     scaleCards();
-    cropCards();
+    //cropCards();
     resizeIframe(global.printFrame);
 }
 
@@ -424,6 +489,21 @@ var renderCards = function(issueKeyList) {
 
     console.log("load " + issueKeyList.length + " issues...");
 
+    var issueDictionary = [];
+    $.each(issueKeyList, function (index, issueKey) {
+        promises.push(global.appFunctions.getIssueSubTasks(issueKey).then(function (cardData) {
+            if (cardData.subtasks.length > 0) {
+                
+                var issueData = {
+                    key: cardData.key,
+                    subtasks: cardData.subtasks
+                };
+                
+                issueDictionary.push(issueData);
+            }
+        }));
+    });
+    
     $.each(issueKeyList, function (index, issueKey) {
         var card = $('<div/>').html(fs.readFileSync(__dirname + '/card.html', 'utf8')).contents()
             .attr("id", issueKey)
@@ -432,16 +512,18 @@ var renderCards = function(issueKeyList) {
         $("body", printFrameDocument).append(card);
 
         promises.push(global.appFunctions.getCardData(issueKey).then(function (cardData) {
-            // console.log("cardData: " + JSON.stringify(cardData,2,2));
+            //console.log("cardData: " + JSON.stringify(cardData,2,2));
             ga('send', 'event', 'card', 'generate', cardData.type);
-            fillCard(card, cardData);
+                        
+            fillCard(card, cardData, index, issueDictionary);
             redrawCards();
         }));
     });
-
+    
     console.log("wait for issues loaded...");
     return Promise.all(promises).then(function () {
         console.log("...all issues loaded.");
+        console.log("cardData: " + JSON.stringify(issueDictionary, 2, 2));
         redrawCards();
     });
 }
@@ -482,14 +564,14 @@ var printPreviewJs = function() {
         return true;
     });
 
-    // show assignee
+    // // show assignee
 
-    documentBody.find("#assignee-checkbox").click(function () {
-        global.settings.hideAssignee = !this.checked;
-        saveSettings();
-        redrawCards();
-        return true;
-    });
+    // documentBody.find("#assignee-checkbox").click(function () {
+    //     global.settings.hideAssignee = !this.checked;
+    //     saveSettings();
+    //     redrawCards();
+    //     return true;
+    // });
 
     // show due date
 
@@ -509,14 +591,14 @@ var printPreviewJs = function() {
         return true;
     });
 
-    // show QR Code
+    // // show QR Code
 
-    documentBody.find("#qr-code-checkbox").click(function () {
-        global.settings.hideQrCode = !this.checked;
-        saveSettings();
-        redrawCards();
-        return true;
-    });
+    // documentBody.find("#qr-code-checkbox").click(function () {
+    //     global.settings.hideQrCode = !this.checked;
+    //     saveSettings();
+    //     redrawCards();
+    //     return true;
+    // });
 
     // show Tags
 
