@@ -1,5 +1,5 @@
 # Issue-Card-Printer
-[![Build Status](https://travis-ci.com/qoomon/Jira-Issue-Card-Printer.svg?branch=master)](https://travis-ci.com/qoomon/Jira-Issue-Card-Printer)
+[![Build Status](https://travis-ci.com/softfair/Jira-Issue-Card-Printer.svg?branch=master)](https://travis-ci.com/softfair/Jira-Issue-Card-Printer)
 
 Beautiful Issue Card Printer
 
@@ -19,7 +19,7 @@ You may fork this project to contribute.
 
 ### Installation
 
-go to [Installation Site](https://qoomon.github.io/Jira-Issue-Card-Printer/bookmarkInstallation.html)
+go to [Installation Site](https://github.com/softfair/Jira-Issue-Card-Printer/bookmarkInstallation.html)
 
 
 ### Card Layout
@@ -56,18 +56,6 @@ select a column by open the add new card input for specific column
 #### Issue tracker
 * **Jira**
   * e.g. https://connect.atlassian.net/browse/NERDS-33286
-* **Bitbucket Issue Tracker**
-  * eg https://bitbucket.org/tutorials/tutorials.bitbucket.org/issues
-* **Trello**
-  * e.g. https://trello.com/b/8zlPSh70/spike
-* **PivotTracker**
-  * e.g. https://www.pivotaltracker.com/n/projects/510733
-* **YouTrack**
-  * e.g. http://qoomon.myjetbrains.com/youtrack/dashboard
-* **TeamForge**
-  * unknown 
-* **Mingle**
-  * unknown 
 
 
 ### Info
