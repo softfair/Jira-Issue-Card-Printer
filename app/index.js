@@ -86,7 +86,6 @@ var saveSettings = function() {
 
     cookies.write("card_printer_single_card_page", settings.singleCardPage);
     cookies.write("card_printer_hide_description", settings.hideDescription);
-    // cookies.write("card_printer_hide_due_date", settings.hideDueDate);
     cookies.write("card_printer_hide_estimate", settings.hideEstimate);
     cookies.write("card_printer_hide_tags", settings.hideTags);
     cookies.write("card_printer_hide_epic", settings.hideEpic);
@@ -100,7 +99,6 @@ var loadSettings = function() {
 
     settings.singleCardPage = parseBool(cookies.read("card_printer_single_card_page"), true);
     settings.hideDescription = parseBool(cookies.read("card_printer_hide_description"), false);
-    // settings.hideDueDate = parseBool(cookies.read("card_printer_hide_due_date"), false);
     settings.hideEstimate = parseBool(cookies.read("card_printer_hide_estimate"), false);
     settings.hideTags = parseBool(cookies.read("card_printer_hide_tags"), true);
     settings.hideEpic = parseBool(cookies.read("card_printer_hide_epic"), false);
@@ -139,7 +137,6 @@ var updatePrintDialogue = function() {
 
     $("#single-card-page-checkbox", appFrameDocument).attr('checked', settings.singleCardPage);
     $("#description-checkbox", appFrameDocument).attr('checked', !settings.hideDescription);
-    // $("#due-date-checkbox", appFrameDocument).attr('checked', !settings.hideDueDate);
     $("#estimate-checkbox", appFrameDocument).attr('checked', !settings.hideEstimate);
     $("#tags-checkbox", appFrameDocument).attr('checked', !settings.hideTags);
     $("#epic-checkbox", appFrameDocument).attr('checked', !settings.hideEpic);
@@ -286,13 +283,6 @@ var fillCard = function (card, data, index, issueDictionary) {
         card.find(".issue-description").addClass("hidden");
     }
 
-    // //Due-Date
-    // if (data.dueDate) {
-    //     card.find(".issue-due-date").text(formatDate(data.dueDate));
-    // } else {
-    //     card.find(".issue-due-box").remove();
-    // }
-
     //Position
     var position = index + 1;
     if (position) {
@@ -389,8 +379,6 @@ var applyCardOptions = function() {
 
     // hide/show description
     $(".issue-description", printFrame.document).toggle(!settings.hideDescription);
-    // // hide/show due date
-    // $(".issue-due-box", printFrame.document).toggle(!settings.hideDueDate);
     // hide/show estimate
     $(".issue-estimate", printFrame.document).toggle(!settings.hideEstimate);
     // hide/show super issue tag
@@ -510,15 +498,6 @@ var printPreviewJs = function() {
         redrawCards();
         return true;
     });
-
-    // // show due date
-
-    // documentBody.find("#due-date-checkbox").click(function () {
-    //     global.settings.hideDueDate = !this.checked;
-    //     saveSettings();
-    //     redrawCards();
-    //     return true;
-    // });
 
     // show estimate
 
