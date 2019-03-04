@@ -84,7 +84,7 @@ var getIssueData = function (issueKey) {
 
     //console.log("Issue: " + issueKey + " Loading...");
     return new Promise(function (fulfill, reject){
-        console.log("IssueUrl: " + urlAgile);
+        //console.log("IssueUrl: " + urlAgile);
         $.getJSON(urlAgile).done(fulfill).fail( function() {
                 console.log("IssueUrl: " + urlClassic);
                 $.get(urlClassic).done(fulfill).fail(reject);
@@ -108,31 +108,62 @@ var getIssueData = function (issueKey) {
     });
 };
 
+var getIssueSubTasks = function (issueKey) {
+    var promises = [];
+    var issueData = {};
+
+    promises.push(getIssueData(issueKey).then(function (data) {
+        var promises = [];
+        
+        //console.log("RAW DATA: " + JSON.stringify(data, 2, 2));
+        issueData.key = data.key;
+        issueData.subtasks = [];
+
+        if (data.fields.subtasks) {    
+            for (i = 0; i < data.fields.subtasks.length; i++) {
+                issueData.subtasks.push(data.fields.subtasks[i].key);
+            }
+        }
+
+        return Promise.all(promises);
+    }));
+
+    return Promise.all(promises).then(function () {
+        return issueData;
+    });
+};
+
 var getCardData = function (issueKey) {
     var promises = [];
     var issueData = {};
 
     promises.push(getIssueData(issueKey).then(function (data) {
         var promises = [];
+
+        //console.log("RAW DATA: " + JSON.stringify(data, 2, 2));
+        
         issueData.key = data.key;
         issueData.type = data.fields.issuetype.name.toLowerCase();
         issueData.summary = data.fields.summary;
         issueData.description = data.renderedFields.description;
         issueData.labels = data.fields.labels;
 
-        if (data.fields.assignee) {
-            issueData.assignee = data.fields.assignee.displayName.replace(/\[[^[]*\]/,'');
-            var avatarUrl = data.fields.assignee.avatarUrls['48x48'];
-            if (avatarUrl.indexOf("ownerId=") >= 0) {
-                issueData.avatarUrl = avatarUrl;
-            }
+        if (data.fields.priority) {
+            issueData.priority = data.fields.priority.name;
+            issueData.priorityIconUrl = data.fields.priority.iconUrl;
         }
 
-        if (data.fields.duedate) {
-            issueData.dueDate = new Date(data.fields.duedate);
+        if (data.fields.issuetype) {
+            issueData.issuetypeIconUrl = data.fields.issuetype.iconUrl;
         }
 
-        issueData.hasAttachment = data.fields.attachment ? data.fields.attachment.length > 0 : false;
+        if (data.fields.status) {
+            issueData.statusText = data.fields.status.name;
+            if (data.fields.status.statusCategory) {
+                issueData.statusColor = data.fields.status.statusCategory.colorName;
+            }            
+        }
+
         issueData.estimate = data.fields.estimate;
 
         if (data.fields.parent) {
@@ -156,5 +187,6 @@ module.exports = {
     isEligible: isEligible,
     getSelectedIssueKeyList: getSelectedIssueKeyList,
     getCardData: getCardData,
+    getIssueSubTasks: getIssueSubTasks,
     getIssueData: getIssueData
 };

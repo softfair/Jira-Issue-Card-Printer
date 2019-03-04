@@ -34,11 +34,6 @@ var getIssueData = function (issueKey) {
         issueData.title = htmlObject.find('h2').text();
         issueData.category    = htmlObject.find('#task-summary > div > div.task-summary-columns > div:nth-child(2) > ul > li:nth-child(1) > span').text();
         issueData.complexity  = htmlObject.find('#task-summary > div > div.task-summary-columns > div:nth-child(1) > ul > li:nth-child(4) > span').text();
-        issueData.assignee    = htmlObject.find('#task-summary > div > div.task-summary-columns > div:nth-child(3) > ul > li:nth-child(1) > span').text();
-        if(issueData.assignee){
-          issueData.assignee = issueData.assignee.trim();
-        }
-        issueData.duedate     = htmlObject.find('#task-summary > div > div.task-summary-columns > div:nth-child(4) > ul > li:nth-child(1) > span').text();
         issueData.description = htmlObject.find('section.accordion-section > div.accordion-content > article').html();  
         if(issueData.description){
           issueData.description = issueData.description.trim();
@@ -61,11 +56,6 @@ var getCardData = function (issueKey) {
         issueData.description = data.description;
         issueData.labels = data.labels;
         issueData.estimate = issueData.complexity;
-        issueData.assignee = data.assignee;
-        if (data.duedate) {
-            issueData.dueDate = new Date(data.duedate);
-        }
-        issueData.hasAttachment = false; //TODO
         issueData.url = data.url;
         return Promise.all(promises);
     }));
