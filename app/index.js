@@ -10,12 +10,6 @@ var cookies = require('./lib/cookies');
 
 var issueTrackers = [
     require('./lib/jira-issue-tracker'),
-    require('./lib/bitbucket-issue-tracker'),
-    require('./lib/mingle-issue-tracker'),
-    require('./lib/pivotal-issue-tracker'),
-    require('./lib/teamforge-issue-tracker'),
-    require('./lib/trello-issue-tracker'),
-    require('./lib/youtrack-issue-tracker'),
     require('./lib/kanboard-issue-tracker')
 ];
 
@@ -92,10 +86,8 @@ var saveSettings = function() {
 
     cookies.write("card_printer_single_card_page", settings.singleCardPage);
     cookies.write("card_printer_hide_description", settings.hideDescription);
-    // cookies.write("card_printer_hide_assignee", settings.hideAssignee);
-    cookies.write("card_printer_hide_due_date", settings.hideDueDate);
+    // cookies.write("card_printer_hide_due_date", settings.hideDueDate);
     cookies.write("card_printer_hide_estimate", settings.hideEstimate);
-    // cookies.write("card_printer_hide_qr_code", settings.hideQrCode);
     cookies.write("card_printer_hide_tags", settings.hideTags);
     cookies.write("card_printer_hide_epic", settings.hideEpic);
 }
@@ -108,10 +100,8 @@ var loadSettings = function() {
 
     settings.singleCardPage = parseBool(cookies.read("card_printer_single_card_page"), true);
     settings.hideDescription = parseBool(cookies.read("card_printer_hide_description"), false);
-    // settings.hideAssignee = parseBool(cookies.read("card_printer_hide_assignee"), false);
-    settings.hideDueDate = parseBool(cookies.read("card_printer_hide_due_date"), false);
+    // settings.hideDueDate = parseBool(cookies.read("card_printer_hide_due_date"), false);
     settings.hideEstimate = parseBool(cookies.read("card_printer_hide_estimate"), false);
-    // settings.hideQrCode = parseBool(cookies.read("card_printer_hide_qr_code"), false);
     settings.hideTags = parseBool(cookies.read("card_printer_hide_tags"), true);
     settings.hideEpic = parseBool(cookies.read("card_printer_hide_epic"), false);
 }
@@ -149,10 +139,8 @@ var updatePrintDialogue = function() {
 
     $("#single-card-page-checkbox", appFrameDocument).attr('checked', settings.singleCardPage);
     $("#description-checkbox", appFrameDocument).attr('checked', !settings.hideDescription);
-    // $("#assignee-checkbox", appFrameDocument).attr('checked', !settings.hideAssignee);
-    $("#due-date-checkbox", appFrameDocument).attr('checked', !settings.hideDueDate);
+    // $("#due-date-checkbox", appFrameDocument).attr('checked', !settings.hideDueDate);
     $("#estimate-checkbox", appFrameDocument).attr('checked', !settings.hideEstimate);
-    // $("#qr-code-checkbox", appFrameDocument).attr('checked', !settings.hideQrCode);
     $("#tags-checkbox", appFrameDocument).attr('checked', !settings.hideTags);
     $("#epic-checkbox", appFrameDocument).attr('checked', !settings.hideEpic);
 }
@@ -205,18 +193,6 @@ var scaleCards = function() {
         "}";
     $("head", printFrame.document).append(style);
 }
-
-// var cropCards = function() {
-//     var cardElements = Array.from(global.printFrame.document.querySelectorAll(".card"));
-//     cardElements.forEach(function (cardElement) {
-//         var cardContent = cardElement.querySelectorAll(".card-body")[0];
-//         if (cardContent.scrollHeight > cardContent.offsetHeight) {
-//             cardContent.classList.add("zigzag");
-//         } else {
-//             cardContent.classList.remove("zigzag");
-//         }
-//     });
-// }
 
 var getIconStyle = function(type) {
     var style = {};
@@ -310,31 +286,11 @@ var fillCard = function (card, data, index, issueDictionary) {
         card.find(".issue-description").addClass("hidden");
     }
 
-    // //Assignee
-    // if (data.assignee) {
-    //     if (data.avatarUrl) {
-    //         card.find(".issue-assignee").css("background-image", "url('" + data.avatarUrl + "')");
-    //     } else {
-    //         var initials = data.assignee.trim().replace(/\s{2,}/g," ").split(/\s/).map(function (namePart) {
-    //             return namePart[0].toUpperCase();
-    //         }).join('');
-    //         card.find(".issue-assignee").text(initials);
-    //         card.find(".issue-assignee").css("background-color", textColor(initials));
-    //     }
+    // //Due-Date
+    // if (data.dueDate) {
+    //     card.find(".issue-due-date").text(formatDate(data.dueDate));
     // } else {
-    //     card.find(".issue-assignee").remove();
-    // }
-
-    //Due-Date
-    if (data.dueDate) {
-        card.find(".issue-due-date").text(formatDate(data.dueDate));
-    } else {
-        card.find(".issue-due-box").remove();
-    }
-
-    // //Attachment
-    // if (!data.hasAttachment) {
-    //     card.find('.issue-attachment').remove();
+    //     card.find(".issue-due-box").remove();
     // }
 
     //Position
@@ -425,10 +381,6 @@ var fillCard = function (card, data, index, issueDictionary) {
             card.find(".issue-tags-box").append(tagElement);
         });
     }
-
-    // //QR-Code
-    // var qrCodeUrl = 'https://chart.googleapis.com/chart?cht=qr&chs=256x256&chld=L|1&chl=' + encodeURIComponent(data.url);
-    // card.find(".issue-qr-code").css("background-image", "url('" + qrCodeUrl + "')");
 }
 
 var applyCardOptions = function() {
@@ -437,14 +389,10 @@ var applyCardOptions = function() {
 
     // hide/show description
     $(".issue-description", printFrame.document).toggle(!settings.hideDescription);
-    // // hide/show assignee
-    // $(".issue-assignee", printFrame.document).toggle(!settings.hideAssignee);
-    // hide/show due date
-    $(".issue-due-box", printFrame.document).toggle(!settings.hideDueDate);
+    // // hide/show due date
+    // $(".issue-due-box", printFrame.document).toggle(!settings.hideDueDate);
     // hide/show estimate
     $(".issue-estimate", printFrame.document).toggle(!settings.hideEstimate);
-    // // hide/show cr code
-    // $(".issue-qr-code", printFrame.document).toggle(!settings.hideQrCode);
     // hide/show super issue tag
     $(".issue-tag-super-issue", printFrame.document).toggle(!settings.hideEpic);
     // hide/show label tags
@@ -470,7 +418,6 @@ var applyCardOptions = function() {
 var redrawCards = function() {
     applyCardOptions();
     scaleCards();
-    //cropCards();
     resizeIframe(global.printFrame);
 }
 
@@ -523,7 +470,7 @@ var renderCards = function(issueKeyList) {
     console.log("wait for issues loaded...");
     return Promise.all(promises).then(function () {
         console.log("...all issues loaded.");
-        console.log("cardData: " + JSON.stringify(issueDictionary, 2, 2));
+        //console.log("cardData: " + JSON.stringify(issueDictionary, 2, 2));
         redrawCards();
     });
 }
@@ -564,25 +511,16 @@ var printPreviewJs = function() {
         return true;
     });
 
-    // // show assignee
+    // // show due date
 
-    // documentBody.find("#assignee-checkbox").click(function () {
-    //     global.settings.hideAssignee = !this.checked;
+    // documentBody.find("#due-date-checkbox").click(function () {
+    //     global.settings.hideDueDate = !this.checked;
     //     saveSettings();
     //     redrawCards();
     //     return true;
     // });
 
-    // show due date
-
-    documentBody.find("#due-date-checkbox").click(function () {
-        global.settings.hideDueDate = !this.checked;
-        saveSettings();
-        redrawCards();
-        return true;
-    });
-
-    // show due date
+    // show estimate
 
     documentBody.find("#estimate-checkbox").click(function () {
         global.settings.hideEstimate = !this.checked;
@@ -590,15 +528,6 @@ var printPreviewJs = function() {
         redrawCards();
         return true;
     });
-
-    // // show QR Code
-
-    // documentBody.find("#qr-code-checkbox").click(function () {
-    //     global.settings.hideQrCode = !this.checked;
-    //     saveSettings();
-    //     redrawCards();
-    //     return true;
-    // });
 
     // show Tags
 
@@ -646,7 +575,6 @@ var printPreviewJs = function() {
     documentBody.find("#columnCount").click(function () {
         this.select();
     });
-
 
     // print
 
@@ -793,7 +721,3 @@ try {
 } catch (e) {
     handleError(e);
 }
-
-
-
-

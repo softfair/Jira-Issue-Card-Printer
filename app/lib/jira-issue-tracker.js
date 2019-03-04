@@ -148,14 +148,6 @@ var getCardData = function (issueKey) {
         issueData.description = data.renderedFields.description;
         issueData.labels = data.fields.labels;
 
-        // if (data.fields.assignee) {
-        //     issueData.assignee = data.fields.assignee.displayName.replace(/\[[^[]*\]/,'');
-        //     var avatarUrl = data.fields.assignee.avatarUrls['48x48'];
-        //     if (avatarUrl.indexOf("ownerId=") >= 0) {
-        //         issueData.avatarUrl = avatarUrl;
-        //     }
-        // }
-
         if (data.fields.priority) {
             issueData.priority = data.fields.priority.name;
             issueData.priorityIconUrl = data.fields.priority.iconUrl;
@@ -172,11 +164,6 @@ var getCardData = function (issueKey) {
             }            
         }
 
-        if (data.fields.duedate) {
-            issueData.dueDate = new Date(data.fields.duedate);
-        }
-
-        // issueData.hasAttachment = data.fields.attachment ? data.fields.attachment.length > 0 : false;
         issueData.estimate = data.fields.estimate;
 
         if (data.fields.parent) {
