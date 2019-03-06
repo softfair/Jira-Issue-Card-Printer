@@ -1,16 +1,16 @@
 language: node_js
 node_js:
-  - 'node'
+  - node
 cache:
   directories:
     - node_modules
 before_install:
   - >-
     openssl aes-256-cbc 
-    -K $encrypted_d4de8deaabc2_key 
-    -iv $encrypted_d4de8deaabc2_iv 
-    -in github_deploy_key.enc 
-    -out github_deploy_key 
+    -K $encrypted_6f9c164d0bb4_key 
+    -iv $encrypted_6f9c164d0bb4_iv
+    -in deploy_rsa.enc 
+    -out deploy_rsa 
     -d
   - chmod 600 github_deploy_key
   - eval $(ssh-agent -s)
@@ -25,4 +25,4 @@ deploy:
   script: scripts/deploy_to_git.sh 'dist' 'git@github.com:softfair/Jira-Issue-Card-Printer.git' 'gh-pages'
   on:
     branch: master
-    condition: $TRAVIS_REPO_SLUG = softfair/Jira-Issue-Card-Printer
+    condition: "$TRAVIS_REPO_SLUG = softfair/Jira-Issue-Card-Printer"
