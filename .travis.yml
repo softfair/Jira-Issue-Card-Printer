@@ -4,8 +4,6 @@ node_js:
 cache:
   directories:
     - node_modules
-addons:
-  ssh_known_hosts: github.com
 before_install:
   - >-
     openssl aes-256-cbc 
@@ -14,9 +12,9 @@ before_install:
       -in deploy_rsa.enc 
       -out deploy_rsa 
       -d 
-    - chmod 600 deploy_rsa
-    - eval $(ssh-agent -s)
-    - ssh-add deploy_rsa
+  - chmod 600 deploy_rsa
+  - eval $(ssh-agent -s)
+  - ssh-add deploy_rsa
 install:
   - npm install
 script:
