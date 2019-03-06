@@ -19,7 +19,7 @@ You may fork this project to contribute.
 
 ### Installation
 
-go to [Installation Site](https://github.com/softfair/Jira-Issue-Card-Printer/bookmarkInstallation.html)
+go to [Installation Site](https://softfair.github.io/Jira-Issue-Card-Printer/bookmarkInstallation.html)
 
 
 ### Card Layout
