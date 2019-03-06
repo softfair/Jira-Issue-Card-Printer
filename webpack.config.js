@@ -27,8 +27,7 @@ module.exports = (env) => {
             ]
         },
         plugins: [
-            //new CleanWebpackPlugin(['build']),
-            new CleanWebpackPlugin('dist'),
+            new CleanWebpackPlugin(),
             new CopyWebpackPlugin([
                 {from: './app/resources', to: 'resources'},
                 {from: './doc/bookmarkInstallation.html'}
