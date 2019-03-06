@@ -1,8 +1,7 @@
 .idea
 *.iml
 node_modules
-dist/resources
-dist/bookmarklet.js.map
+dist
 gh-pages
 .deploy
 .DS_Store
